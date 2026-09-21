@@ -52,8 +52,10 @@ public class GeoapifyClient implements GeoCodingClient {
 
 
     private Location toLocation(GeoapifyResponse.Result result) {
+        String name = result.formatted() != null ? result.formatted() : result.city();
+
         return new Location(
-                result.formatted(),
+                name,
                 result.country(),
                 result.city(),
                 result.lat(),

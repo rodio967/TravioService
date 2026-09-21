@@ -40,13 +40,13 @@ public class HttpJson {
     private <T> T parse(HttpResponse<String> response, Class<T> type) {
         int status = response.statusCode();
 
-        if (status == 429) throw new RuntimeException("сервис временно ограничил запросы, попробуйтек через минуту");
+        if (status == 429) throw new RuntimeException("сервис временно ограничил запросы, попробуйте через минуту");
         if (status / 100 != 2) throw new RuntimeException("Сервис " + response.uri().getHost() + " ответил " + status);
 
         try {
             return objectMapper.readValue(response.body(), type);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Error: ошибка парсинга ответа " + response.uri().getHost(), e);
+            throw new RuntimeException("ошибка парсинга ответа " + response.uri().getHost(), e);
         }
 
     }
