@@ -38,14 +38,22 @@ public class OpenWeatherClient implements WeatherClient {
     }
 
     private Weather toWeather(OpenWeatherResponse weatherResponse) {
-        List<OpenWeatherResponse.Description> weather = weatherResponse.weather();
-        String description = (weather == null || weather.isEmpty()) ? "" : weather.get(0).description();
+        OpenWeatherResponse.Main main = weatherResponse.main();
+        if (main == null) {
+            throw new RuntimeException("сервис погоды вернул ответ без температуры");
+        }
 
-        return new Weather(
-                weatherResponse.main().temp(),
-                weatherResponse.main().feelsLike(),
+        List<OpenWeatherResponse.Description> weather = weatherResponse.weather();
+        String description = (weather == null || weather.isEmpty() || weather.get(0).description() == null)
+                ? ""
+                : weather.get(0).description();
+
+        OpenWeatherResponse.Wind wind = weatherResponse.wind();
+        double windMs = wind != null ? wind.speed() : 0.0;
+
+        return new Weather(main.temp(),
+                main.feelsLike(),
                 description,
-                weatherResponse.wind().speed()
-        );
+                windMs);
     }
 }
