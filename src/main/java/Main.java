@@ -5,6 +5,7 @@ import api.places.wikipedia.client.WikipediaGeosearchClient;
 import api.places.wikipedia.client.WikipediaPlacesClient;
 import api.weather.openweather.OpenWeatherClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import config.Config;
 import service.TravioService;
 import ui.MainPresenter;
 import ui.MainWindow;
@@ -22,9 +23,11 @@ public class Main {
                         .build(),
                 new ObjectMapper());
 
+        Config config = new Config();
+
         TravioService travioService = new TravioService(
-                new GeoapifyClient(httpJson, requireEnv("GEOAPIFY_KEY")),
-                new OpenWeatherClient(httpJson, requireEnv("OPENWEATHER_KEY")),
+                new GeoapifyClient(httpJson, config.getEnvValue("GEOAPIFY_KEY")),
+                new OpenWeatherClient(httpJson, config.getEnvValue("OPENWEATHER_KEY")),
                 new WikipediaPlacesClient(
                         httpJson,
                         new WikipediaGeosearchClient(httpJson),
@@ -35,12 +38,5 @@ public class Main {
             window.setPresenter(new MainPresenter(travioService, window, SwingUtilities::invokeLater));
             window.setVisible(true);
         });
-    }
-
-    private static String requireEnv(String name) {
-        String value = System.getenv(name);
-        if (value == null || value.isBlank()) throw new IllegalStateException("Не задана переменная окружения " + name);
-
-        return value;
     }
 }
