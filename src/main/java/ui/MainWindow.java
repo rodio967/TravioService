@@ -81,6 +81,7 @@ public class MainWindow extends JFrame implements MainView {
     @Override
     public void setSearchEnabled(boolean enabled) {
         searchButton.setEnabled(enabled);
+        searchField.setEnabled(enabled);
     }
 
     @Override
@@ -167,9 +168,12 @@ public class MainWindow extends JFrame implements MainView {
     private void wireEvents() {
         searchButton.addActionListener(e -> presenter.onSearch(searchField.getText()));
         searchField.addActionListener(e -> presenter.onSearch(searchField.getText()));
+
         locationsList.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting() && locationsList.getSelectedValue() != null) {
-                presenter.onLocationSelected(locationsList.getSelectedValue());
+            Location selected = locationsList.getSelectedValue();
+            if (!e.getValueIsAdjusting() && selected != null) {
+                presenter.onLocationSelected(selected);
+                locationsList.clearSelection();
             }
         });
         placesList.addListSelectionListener(e -> {
