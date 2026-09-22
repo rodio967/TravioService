@@ -7,7 +7,9 @@ import model.Location;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public class GeoapifyClient implements GeoCodingClient {
@@ -45,14 +47,16 @@ public class GeoapifyClient implements GeoCodingClient {
             return List.of();
         }
 
+        Set<String> seen = new HashSet<>();
         return response.results().stream()
                 .map(result -> toLocation(result))
+                .filter(location -> seen.add(location.name() + "|" + location.country()))
                 .toList();
     }
 
 
     private Location toLocation(GeoapifyResponse.Result result) {
-        String name = result.formatted() != null ? result.formatted() : result.city();
+        String name = result.city() != null ? result.city() : result.formatted();
 
         return new Location(
                 name,

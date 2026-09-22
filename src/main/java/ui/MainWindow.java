@@ -107,7 +107,7 @@ public class MainWindow extends JFrame implements MainView {
                                                           boolean isSelected, boolean cellHasFocus) {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 Location loc = (Location) value;
-                setText(loc.name() + " — " + loc.country());
+                setText(loc.name() + ", " + loc.country());
                 return this;
             }
         });
